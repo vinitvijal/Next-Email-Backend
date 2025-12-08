@@ -12,7 +12,7 @@ export async function POST(request: Request) {
     const body = await request.text();
     const to = request.headers.get('to');
     const subject = request.headers.get('subject');
-    const host = request.headers.get('host');
+    const host = request.headers.get('host-url');
     const port = request.headers.get('port');
     const method = request.headers.get('method');
     const username = request.headers.get('user');
@@ -34,7 +34,7 @@ export async function POST(request: Request) {
     const transporter = Nodemailer.createTransport({
         host: host,
         port: parseInt(port),
-        secure: method === 'SSL', // true for 465, false for other ports
+        secure: method === "SSL", // true for 465, false for other ports
         auth: {
             user: username,
             pass: password,
@@ -61,7 +61,8 @@ export async function POST(request: Request) {
 
     
     
-    console.log("Message sent:", info);
+    
+    // console.log("Message sent:", info);
 
     return new Response("Email sent successfully!");
 }
