@@ -59,10 +59,16 @@ export async function POST(request: Request) {
         // html: `${body}` // HTML body
     });
 
+
+    if (!info.messageId) {
+        return new Response("Failed to send email", { status: 500 });
+    }
+
     
     
     
     // console.log("Message sent:", info);
 
-    return new Response("Email sent successfully!");
+    return new Response(JSON.stringify({"message": "Email sent successfully!", "messageId": info.messageId}));
+
 }

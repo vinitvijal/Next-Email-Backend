@@ -69,10 +69,5 @@ export async function POST(request: Request) {
     
     // console.log("Message sent:", info);
 
-    return new Response(JSON.stringify({"message": "Email sent successfully!", "messageId": info.messageId}), {
-        status: 200,
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    });
+    return new Response(JSON.stringify({"message": "Email sent successfully!", "messageId": info.messageId}));
 }
