@@ -11,8 +11,24 @@ export async function POST(request: Request) {
     const to = request.headers.get('to');
     const subject = request.headers.get('subject');
     const body = request.headers.get('body');
-    // Here you would integrate with an email service provider to send the email.
-    // For demonstration purposes, we'll just log the email details.
+    const host = request.headers.get('host');
+    const port = request.headers.get('port');
+    const method = request.headers.get('method');
+    const username = request.headers.get('user');
+    const password = request.headers.get('pass');
+
+    if (!to || !subject || !body) {
+        return new Response("Missing required email fields", { status: 400 });
+    }
+
+    if (!host || !port || !method || !username || !password) {
+        return new Response("Missing required SMTP configuration", { status: 400 });
+    }
+
+    
+
+
+
     console.log(`Sending email to: ${to}`);
     console.log(`Subject: ${subject}`);
     console.log(`Body: ${body}`);
