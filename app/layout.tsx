@@ -50,7 +50,7 @@ export default function RootLayout({
         <header className="sticky top-0 z-40 w-full backdrop-blur supports-backdrop-filter:bg-background/70">
           <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
             <a href="/" className="flex items-center gap-2">
-              <span className="inline-block h-6 w-6 rounded bg-linear-to-br from-orange-500 to-amber-600" />
+              <span className="inline-block h-6 w-6 rounded bg-linear-to-br from-sky-500 to-blue-600" />
               <span className="text-sm font-semibold tracking-wide">Cloudflare Mail SDK</span>
             </a>
             <nav className="hidden items-center gap-6 text-sm sm:flex">

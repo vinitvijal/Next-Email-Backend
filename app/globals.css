@@ -2,7 +2,11 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  /* Slate-900 for a bluish neutral text */
+  --foreground: #0f172a;
+  /* Brand blues for accents */
+  --brand: #2563eb; /* blue-600 */
+  --brand-foreground: #ffffff;
 }
 
 @theme inline {
@@ -14,8 +18,9 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* Deep navy-like dark background and soft foreground */
+    --background: #0a1425;
+    --foreground: #e6edf5;
   }
 }
 

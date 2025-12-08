@@ -3,7 +3,7 @@ export default function Home() {
     <main className="mx-auto w-full max-w-6xl px-4">
       {/* Hero */}
       <section className="flex min-h-[60vh] flex-col items-center justify-center gap-8 py-16 text-center sm:py-24">
-        <h1 className="bg-linear-to-br from-orange-500 to-amber-600 bg-clip-text text-4xl font-extrabold leading-tight text-transparent sm:text-6xl">
+        <h1 className="bg-linear-to-br from-sky-500 to-blue-600 bg-clip-text text-4xl font-extrabold leading-tight text-transparent sm:text-6xl">
           Nodemailer Alternative for Cloudflare
         </h1>
         <p className="max-w-2xl text-balance text-lg text-zinc-700 dark:text-zinc-300">
