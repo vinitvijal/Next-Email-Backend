@@ -27,6 +27,7 @@ export async function POST(request: Request) {
     }
 
     if (!host || !port || !method || !username || !password) {
+        console.log(host, port, method, username, password)
         return new Response("Missing required SMTP configuration", { status: 400 });
     }
 
