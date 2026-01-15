@@ -83,19 +83,26 @@ export default function Home() {
             <h2 className="text-xl font-semibold">Send your first email</h2>
             <span className="text-xs text-zinc-500 dark:text-zinc-400">TypeScript • Cloudflare Workers</span>
           </div>
-          <pre className="overflow-x-auto rounded-lg bg-black p-4 text-sm text-zinc-100"><code>{`// npm install @cloudflare-mail/sdk
-import { Mail } from "@cloudflare-mail/sdk";
+          <pre className="overflow-x-auto rounded-lg bg-black p-4 text-sm text-zinc-100"><code>{`// npm install email-sdk
+import { QodeMLClient } from "email-sdk";
 
-const client = new Mail({
-  apiKey: process.env.MAIL_API_KEY!,
-});
+const client = new QodeMLClient({
+    host: "smtp.office365.com",
+    port: 587, 
+    method: "PLAIN",
+    username: "USERNAME",
+    password: "PASSWORD",
+    useSsl: true,
+    apiKey: "YOUR_API_KEY",
+}); 
 
-await client.send({
-  to: "hello@example.com",
-  from: "noreply@yourapp.com",
-  subject: "Welcome to our app",
-  text: "Thanks for signing up!",
-});
+await client.sendEmail({
+        to: "email@gmail.com",
+        from: "info@qodeml.com",
+        subject: "Thank you for contacting us",
+        body: "Hello User,\n\nThank you for reaching out to us. We have received your message and will get back to you shortly.\n\nBest Regards,\nQodeML Team",
+        isHtml: false,
+    })
 // Works without SMTP/Nodemailer, perfect for Cloudflare Workers
 `}</code></pre>
         </div>

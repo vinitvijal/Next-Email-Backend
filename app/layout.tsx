@@ -14,26 +14,18 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Cloudflare Mail SDK – Nodemailer Alternative",
+  title: "EMail SDK – Nodemailer Alternative for Cloudflare",
   description:
     "TypeScript-first Mail SDK for Cloudflare. Free 1,000 mails/month. Simple API keys, zero SMTP.",
   icons: {
     icon: "/favicon.ico",
   },
   openGraph: {
-    title: "Cloudflare Mail SDK – Nodemailer Alternative",
+    title: "EMail SDK – Nodemailer Alternative for Cloudflare",
     description:
       "Send emails from Cloudflare Workers without SMTP. TypeScript SDK, free tier included.",
-    url: "https://example.com",
-    siteName: "Cloudflare Mail SDK",
-    images: [
-      {
-        url: "/og.png",
-        width: 1200,
-        height: 630,
-        alt: "Cloudflare Mail SDK",
-      },
-    ],
+    url: "https://email.qodeml.com",
+    siteName: "EMail SDK for Cloudflare",
     type: "website",
   },
 };
