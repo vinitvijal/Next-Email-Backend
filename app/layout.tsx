@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { ClerkProvider } from "@clerk/nextjs";
+import { ClerkProvider, UserButton } from "@clerk/nextjs";
+import { currentUser } from "@clerk/nextjs/server";
+import Link from "next/link";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,11 +25,12 @@ export const metadata: Metadata = {
   
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const user = await currentUser();
   return (
     <ClerkProvider>
     <html lang="en">
@@ -36,16 +39,24 @@ export default function RootLayout({
       >
         <header className="sticky top-0 z-40 w-full backdrop-blur supports-backdrop-filter:bg-background/70">
           <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-            <a href="/" className="flex items-center gap-2">
+            <Link href="/" className="flex items-center gap-2">
               <span className="inline-block h-6 w-6 rounded bg-linear-to-br from-sky-500 to-blue-600" />
               <span className="text-sm font-semibold tracking-wide">Cloudflare Mail SDK</span>
-            </a>
+            </Link>
             <nav className="hidden items-center gap-6 text-sm sm:flex">
-              <a className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100" href="#features">Features</a>
-              <a className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100" href="#code">Code</a>
-              <a className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100" href="#pricing">Pricing</a>
-              <a className="rounded-full border border-zinc-300 px-3 py-1.5 text-zinc-700 transition-colors hover:bg-zinc-100 dark:border-zinc-600 dark:text-zinc-200 dark:hover:bg-zinc-800" href="#docs">Docs</a>
-              <a className="rounded-full bg-foreground px-3 py-1.5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc]" href="#signin">Sign In</a>
+              <Link className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100" href="#features">Features</Link>
+              <Link className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100" href="#code">Code</Link>
+              <Link className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100" href="#pricing">Pricing</Link>
+              {/* <Link className="rounded-full border border-zinc-300 px-3 py-1.5 text-zinc-700 transition-colors hover:bg-zinc-100 dark:border-zinc-600 dark:text-zinc-200 dark:hover:bg-zinc-800" href="#docs">Docs</Link> */}
+              {
+                user ? 
+                <>
+                  <Link className="rounded-full bg-foreground px-3 py-1.5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc]" href="/dashboard">Dashboard</Link>
+                  <UserButton />
+                </>
+                :
+                <Link className="rounded-full bg-foreground px-3 py-1.5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc]" href="/sign-in">Sign In</Link>
+              }
             </nav>
           </div>
         </header>
@@ -56,9 +67,9 @@ export default function RootLayout({
               © {new Date().getFullYear()} Cloudflare Mail SDK. All rights reserved.
             </p>
             <div className="flex items-center gap-4 text-sm">
-              <a className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100" href="#terms">Terms</a>
-              <a className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100" href="#privacy">Privacy</a>
-              <a className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100" href="#status">Status</a>
+              <Link className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100" href="#terms">Terms</Link>
+              <Link className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100" href="#privacy">Privacy</Link>
+              <Link className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100" href="#status">Status</Link>
             </div>
           </div>
         </footer>
