@@ -10,9 +10,6 @@ export async function getDashboardData() {
         return null
     }
 
-    const user = await prisma.user.findUnique({
-        where: { id: userId },
-    })
     const wallet = await prisma.wallet.findUnique({
         where: { userId: userId },
     })
@@ -29,11 +26,35 @@ export async function getDashboardData() {
         take: 5,
     })
 
+    const getTotalEmailsSent = await prisma.emails.groupBy({
+        by: 'status',
+        _count: { status: true },
+        where: { userId: userId },
+    })
+
+    console.log(getTotalEmailsSent)
+    let total = 0;
+    let sent = 0;
+    let failed = 0;
+
+    getTotalEmailsSent.forEach((item) => {
+        total += item._count.status;
+        if (item.status === 'SENT') {
+            sent = item._count.status;
+        } else if (item.status === 'FAILED') {
+            failed = item._count.status;
+        }
+    });
+
     return {
-        user,
         wallet,
         apiKeys,
         emails,
+        totalEmailsSent: {
+            total,
+            sent,
+            failed,
+        }
     }
 }
 
@@ -81,3 +102,5 @@ export async function createApiKey(){
     });
     return { apiKey: apiKey, message: 'API Key Created', keyDetails: newKey }
 }
+
+
