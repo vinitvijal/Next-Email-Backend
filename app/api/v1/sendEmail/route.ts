@@ -84,15 +84,10 @@ export async function POST(request: Request) {
         },
     });
 
-
-    
-
     console.log(`Sending email to: ${to}`);
     console.log(`Subject: ${subject}`);
     console.log(`Body: ${body}`);
     
-    
-
 
     const info = await transporter.sendMail({
         from: from,

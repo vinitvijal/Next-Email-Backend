@@ -20,7 +20,7 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(false);
   const [apiKeys, setApiKeys] = useState<ApiKey[]>([]);
   const [stats, setStats] = useState<Emails[]>([]);
-  const [userData, setUserData] = useState<User | null>(null);
+  const [KPI, setKPI] = useState<{ total: number; sent: number; failed: number } | null>(null);
   const [wallet, setWallet] = useState<Wallet | null>(null);
   const [newKeyLabel, setNewKeyLabel] = useState("");
   const [showKeyDialog, setShowKeyDialog] = useState(false);
@@ -38,8 +38,8 @@ export default function DashboardPage() {
         if (res) {
           setApiKeys(res.apiKeys);
           setStats(res.emails);
-          setUserData(res.user);
           setWallet(res.wallet);
+          setKPI(res.totalEmailsSent);
         }
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
