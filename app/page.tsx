@@ -103,7 +103,7 @@ await client.sendEmail({
         body: "Hello User,\n\nThank you for reaching out to us. We have received your message and will get back to you shortly.\n\nBest Regards,\nQodeML Team",
         isHtml: false,
     })
-// Works without SMTP/Nodemailer, perfect for Cloudflare Workers
+// Works without Nodemailer, perfect for Cloudflare Workers
 `}</code></pre>
         </div>
       </section>
@@ -143,7 +143,7 @@ await client.sendEmail({
       <section className="py-16 text-center">
         <h2 className="text-2xl font-bold">Ship emails from Cloudflare in minutes</h2>
         <p className="mx-auto mt-2 max-w-xl text-sm text-zinc-600 dark:text-zinc-400">
-          Sign in, create your account, copy your API keys, and start sending with our SDK. No SMTP, no servers.
+          Sign in, create your account, copy your API keys, and start sending with our SDK. No Nodemailer, no servers.
         </p>
         <div className="mt-6 flex justify-center gap-3">
           <a href="#signin" className="rounded-full bg-foreground px-5 py-2.5 text-background">Sign In</a>

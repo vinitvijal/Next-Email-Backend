@@ -33,6 +33,7 @@ model ApiKey {
   user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  emails    Emails[]
 }
 
 model Wallet {
@@ -54,4 +55,19 @@ model WalletLogs {
   requestId String?
   user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
+}
+
+
+model Emails {
+  id          String   @id @default(cuid())
+  to          String
+  from        String
+  subject     String
+  isHtml      Boolean  @default(false)
+  status      String   @default("SENT")
+  requestId   String?
+  apiKeyId    String
+  apiKey      ApiKey   @relation(fields: [apiKeyId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
