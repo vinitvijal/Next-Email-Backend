@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useUser, SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
-import { getDashboardData } from "./actions";
+import { createApiKey, getDashboardData } from "./actions";
 import {  ApiKeyStatus, Emails, User, Wallet } from "../generated/prisma/client";
 
 interface ApiKey {
@@ -53,25 +53,26 @@ export default function DashboardPage() {
 
   async function handleCreateKey() {
     if (!newKeyLabel.trim()) return;
-    // try {
-    //   setLoading(true);
-    //   // Example: call your backend route
-    //   // const res = await fetch("/api/v1/keys", { method: "POST", body: JSON.stringify({ label: newKeyLabel }) });
-    //   // const created = await res.json();
-    //   const createApiKeywithHash = crypto.
-    //   const created: ApiKey = {
-    //     id: Math.random().toString(36).substring(2, 15),
-    //     userId: userData ? userData.id : "unknown",
-    //     label: newKeyLabel,
-    //     status: "active",
-    //     createdAt: new Date(),
-    //     updatedAt: new Date(),
-    //   };
-    //   setApiKeys((prev) => [created, ...prev]);
-    //   setNewKeyLabel("");
-    // } finally {
-    //   setLoading(false);
-    // }
+    try {
+      setLoading(true);
+      // Example: call your backend route
+      // const res = await fetch("/api/v1/keys", { method: "POST", body: JSON.stringify({ label: newKeyLabel }) });
+      // const created = await res.json();
+      const response = await createApiKey();
+      if (response.error) {
+        // Handle error (e.g., show notification)
+        return;
+      }
+      
+      if (!response.keyDetails){
+          return;
+      }
+      
+      setApiKeys((prev) => [response.keyDetails, ...prev]);
+      setNewKeyLabel("");
+    } finally {
+      setLoading(false);
+    }
   }
 
   function handleRevokeKey(id: string) {
