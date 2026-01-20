@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import React from "react";
 import { useUser, SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
 import { createApiKey, getDashboardData } from "./actions";
 import {  ApiKeyStatus, Emails, User, Wallet } from "../generated/prisma/client";
@@ -22,6 +23,9 @@ export default function DashboardPage() {
   const [userData, setUserData] = useState<User | null>(null);
   const [wallet, setWallet] = useState<Wallet | null>(null);
   const [newKeyLabel, setNewKeyLabel] = useState("");
+  const [showKeyDialog, setShowKeyDialog] = useState(false);
+  const [newApiKeyValue, setNewApiKeyValue] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
 
 
 
@@ -55,21 +59,19 @@ export default function DashboardPage() {
     if (!newKeyLabel.trim()) return;
     try {
       setLoading(true);
-      // Example: call your backend route
-      // const res = await fetch("/api/v1/keys", { method: "POST", body: JSON.stringify({ label: newKeyLabel }) });
-      // const created = await res.json();
       const response = await createApiKey();
       if (response.error) {
         // Handle error (e.g., show notification)
         return;
       }
-      
-      if (!response.keyDetails){
-          return;
+      if (!response.keyDetails || !response.apiKey) {
+        return;
       }
-      
       setApiKeys((prev) => [response.keyDetails, ...prev]);
       setNewKeyLabel("");
+      setNewApiKeyValue(response.apiKey);
+      setShowKeyDialog(true);
+      setCopied(false);
     } finally {
       setLoading(false);
     }
@@ -80,8 +82,44 @@ export default function DashboardPage() {
     setApiKeys((prev) => prev.filter((k) => k.id !== id));
   }
 
+  // Modal dialog for new API key
+  const KeyDialog = () => (
+    showKeyDialog && newApiKeyValue ? (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+        <div className="relative w-full max-w-md rounded-2xl bg-white dark:bg-zinc-900 p-8 shadow-2xl border border-zinc-200 dark:border-zinc-700">
+          <h3 className="text-lg font-semibold mb-2 text-zinc-900 dark:text-zinc-100">Your new API key</h3>
+          <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4">This key will only be shown once. Copy and save it securely.</p>
+          <div className="flex items-center gap-2 mb-6">
+            <span className="font-mono text-xs bg-zinc-100 dark:bg-zinc-800 px-3 py-2 rounded-lg select-all break-all">
+              {newApiKeyValue}
+            </span>
+            <button
+              onClick={() => {
+                navigator.clipboard.writeText(newApiKeyValue);
+                setCopied(true);
+              }}
+              className="inline-flex items-center gap-1 rounded-md bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 text-xs font-medium transition"
+            >
+              {copied ? "Copied!" : "Copy"}
+            </button>
+          </div>
+          <button
+            onClick={() => {
+              setShowKeyDialog(false);
+              setNewApiKeyValue(null);
+            }}
+            className="w-full rounded-lg bg-zinc-200 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-100 py-2 font-medium hover:bg-zinc-300 dark:hover:bg-zinc-700 transition"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    ) : null
+  );
+
   return (
     <main className="mx-auto w-full max-w-6xl px-4 py-10">
+      <KeyDialog />
       <SignedOut>
         <section className="rounded-xl border border-zinc-200 p-8 text-center dark:border-zinc-700">
           <h1 className="text-2xl font-bold">Dashboard</h1>
