@@ -23,6 +23,7 @@ model User {
   apiKeys   ApiKey[]
   wallet    Wallet?
   walletLogs WalletLogs[]
+  emails    Emails[]
 }
 
 
@@ -30,11 +31,19 @@ model ApiKey {
   id        String   @id @default(cuid())
   key       String   @unique
   userId    String
+  label     String
+  status  ApiKeyStatus @default(ACTIVE)
   user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   emails    Emails[]
 }
+
+enum ApiKeyStatus {
+  ACTIVE
+  REVOKED
+}
+
 
 model Wallet {
   id        String   @id @default(cuid())
@@ -66,6 +75,8 @@ model Emails {
   isHtml      Boolean  @default(false)
   status      String   @default("SENT")
   requestId   String?
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
   apiKeyId    String
   apiKey      ApiKey   @relation(fields: [apiKeyId], references: [id])
   createdAt   DateTime @default(now())
