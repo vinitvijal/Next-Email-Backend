@@ -20,14 +20,7 @@ export const metadata: Metadata = {
   icons: {
     icon: "/favicon.ico",
   },
-  openGraph: {
-    title: "EMail SDK – Nodemailer Alternative for Cloudflare",
-    description:
-      "Send emails from Cloudflare Workers without SMTP. TypeScript SDK, free tier included.",
-    url: "https://email.qodeml.com",
-    siteName: "EMail SDK for Cloudflare",
-    type: "website",
-  },
+  
 };
 
 export default function RootLayout({
