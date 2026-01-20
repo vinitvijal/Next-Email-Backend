@@ -102,23 +102,24 @@ export async function POST(request: Request) {
         // html: `${body}` // HTML body
     });
 
-
-    if (!info.messageId) {
-        return new Response("Failed to send email", { status: 500 });
-    }
-
-    
     await prisma.emails.create({
         data: {
             userId: apiData.user.id,
             to: to,
             from: from,
             subject: subject,
-            requestId: info.messageId,
+            requestId: info.messageId || 'Failed to get messageId',
             status: info.accepted.length > 0 ? 'SENT' : 'FAILED',
             apiKeyId: apiData.id,
+            isHtml: false,
         },
     });
+
+
+    if (!info.messageId) {
+        return new Response("Failed to send email", { status: 500 });
+    }
+
     
     // console.log("Message sent:", info);
 
