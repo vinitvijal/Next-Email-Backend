@@ -2,63 +2,50 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useUser, SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
+import { getDashboardData } from "./actions";
+import {  ApiKeyStatus, Emails, User, Wallet } from "../generated/prisma/client";
 
-type ApiKey = {
-  id: string;
-  label: string;
-  createdAt: string;
-  lastUsedAt?: string | null;
-  secretPreview?: string; // e.g. "sk_live_...8f3"
-};
-
-type RequestStat = {
-  id: string;
-  timestamp: string;
-  to: string;
-  subject: string;
-  status: "queued" | "sent" | "failed";
-  durationMs?: number;
-};
+interface ApiKey {
+    id: string;
+    userId: string;
+    label: string;
+    status: ApiKeyStatus;
+    createdAt: Date;
+    updatedAt: Date;
+}
 
 export default function DashboardPage() {
   const { user } = useUser();
   const [loading, setLoading] = useState(false);
   const [apiKeys, setApiKeys] = useState<ApiKey[]>([]);
-  const [stats, setStats] = useState<RequestStat[]>([]);
+  const [stats, setStats] = useState<Emails[]>([]);
+  const [userData, setUserData] = useState<User | null>(null);
+  const [wallet, setWallet] = useState<Wallet | null>(null);
   const [newKeyLabel, setNewKeyLabel] = useState("");
 
-  // Mock fetchers — replace with your API routes
+
+
+
+
   useEffect(() => {
-    // Example: fetch existing keys
-    // await fetch("/api/v1/keys", { credentials: "include" })
-    setApiKeys([
-      {
-        id: "key_123",
-        label: "Production",
-        createdAt: new Date(Date.now() - 86400000).toISOString(),
-        lastUsedAt: new Date().toISOString(),
-        secretPreview: "sk_live_********8f3",
-      },
-    ]);
-    // Example: fetch recent email request stats
-    setStats([
-      {
-        id: "req_1",
-        timestamp: new Date().toISOString(),
-        to: "hello@example.com",
-        subject: "Welcome",
-        status: "sent",
-        durationMs: 420,
-      },
-      {
-        id: "req_2",
-        timestamp: new Date(Date.now() - 3600_000).toISOString(),
-        to: "user@domain.com",
-        subject: "Verify your email",
-        status: "queued",
-      },
-    ]);
+    async function fetchData() {
+      try {
+        const res = await getDashboardData();
+        if (res) {
+          setApiKeys(res.apiKeys);
+          setStats(res.emails);
+          setUserData(res.user);
+          setWallet(res.wallet);
+        }
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+      } 
+    }
+    fetchData();
   }, []);
+
+
+
 
   const monthlyCount = useMemo(() => stats.length, [stats]);
   const sentCount = useMemo(() => stats.filter((s) => s.status === "sent").length, [stats]);
@@ -66,22 +53,25 @@ export default function DashboardPage() {
 
   async function handleCreateKey() {
     if (!newKeyLabel.trim()) return;
-    try {
-      setLoading(true);
-      // Example: call your backend route
-      // const res = await fetch("/api/v1/keys", { method: "POST", body: JSON.stringify({ label: newKeyLabel }) });
-      // const created = await res.json();
-      const created: ApiKey = {
-        id: `key_${Math.random().toString(36).slice(2, 7)}`,
-        label: newKeyLabel.trim(),
-        createdAt: new Date().toISOString(),
-        secretPreview: "sk_live_********2ab",
-      };
-      setApiKeys((prev) => [created, ...prev]);
-      setNewKeyLabel("");
-    } finally {
-      setLoading(false);
-    }
+    // try {
+    //   setLoading(true);
+    //   // Example: call your backend route
+    //   // const res = await fetch("/api/v1/keys", { method: "POST", body: JSON.stringify({ label: newKeyLabel }) });
+    //   // const created = await res.json();
+    //   const createApiKeywithHash = crypto.
+    //   const created: ApiKey = {
+    //     id: Math.random().toString(36).substring(2, 15),
+    //     userId: userData ? userData.id : "unknown",
+    //     label: newKeyLabel,
+    //     status: "active",
+    //     createdAt: new Date(),
+    //     updatedAt: new Date(),
+    //   };
+    //   setApiKeys((prev) => [created, ...prev]);
+    //   setNewKeyLabel("");
+    // } finally {
+    //   setLoading(false);
+    // }
   }
 
   function handleRevokeKey(id: string) {
@@ -129,7 +119,7 @@ export default function DashboardPage() {
           </div>
           <div className="rounded-xl border border-zinc-200 p-5 dark:border-zinc-700">
             <div className="text-sm text-zinc-600 dark:text-zinc-400">Limit</div>
-            <div className="mt-2 text-3xl font-extrabold">1,000 / month</div>
+            <div className="mt-2 text-3xl font-extrabold">{wallet?.balanceCredits} Credits</div>
           </div>
         </section>
 
@@ -174,9 +164,9 @@ export default function DashboardPage() {
                   {apiKeys.map((k) => (
                     <tr key={k.id} className="border-t border-zinc-100 dark:border-zinc-800">
                       <td className="px-4 py-3">{k.label}</td>
-                      <td className="px-4 py-3 font-mono text-xs">{k.secretPreview || "sk_********"}</td>
+                      <td className="px-4 py-3 font-mono text-xs">{k.label || "sk_********"}</td>
                       <td className="px-4 py-3">{new Date(k.createdAt).toLocaleString()}</td>
-                      <td className="px-4 py-3">{k.lastUsedAt ? new Date(k.lastUsedAt).toLocaleString() : "—"}</td>
+                      <td className="px-4 py-3">{k.updatedAt ? new Date(k.updatedAt).toLocaleString() : "—"}</td>
                       <td className="px-4 py-3">
                         <button
                           onClick={() => handleRevokeKey(k.id)}
@@ -218,7 +208,7 @@ export default function DashboardPage() {
                 <tbody>
                   {stats.map((s) => (
                     <tr key={s.id} className="border-t border-zinc-100 dark:border-zinc-800">
-                      <td className="px-4 py-3">{new Date(s.timestamp).toLocaleString()}</td>
+                      <td className="px-4 py-3">{new Date(s.createdAt).toLocaleString()}</td>
                       <td className="px-4 py-3">{s.to}</td>
                       <td className="px-4 py-3">{s.subject}</td>
                       <td className="px-4 py-3">
@@ -234,7 +224,7 @@ export default function DashboardPage() {
                           {s.status}
                         </span>
                       </td>
-                      <td className="px-4 py-3">{s.durationMs ? `${s.durationMs} ms` : "—"}</td>
+                      <td className="px-4 py-3">{s.requestId}</td>
                     </tr>
                   ))}
                 </tbody>
