@@ -36,7 +36,7 @@ export const completeOnboarding = async (formData: FormData) => {
         await prisma.wallet.create({
             data: {
                 userId: userId,
-                balanceCredits: 100, // Initial balance
+                balanceCredits: 20, // Initial balance
             },
         })
     } 
